@@ -35,6 +35,7 @@ with DAG(
 ) as dag: # all above hold in one variable dag
     
     @task()# task define when which one run
+    # 1st task Extract 
     def extract_weather_date():
         http_hook = HttpHook(http_conn_id= API_CONN_ID, method='GET') # connect api
         weather_data_list = [] #empty list so when reponse came its store
@@ -48,6 +49,16 @@ with DAG(
             )
 
             response = http_hook.run(endpoint) # store after api hitted by me 
+
+            if response.status_code == 200 : # indicate ok , responce successfully
+                data = response.json()
+                data['location'] = location
+                weather_data_list.append(data)
+            else:
+                raise Exception('Failed to Fetch data')
+            
+
+
     
     
 
