@@ -1,0 +1,17 @@
+version: '3' # docker version
+services: # services which i am using
+  postgres: # 1st container/ service
+    image: postgres:13 # image name 
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports: # where in my computer runs
+      - "5432:5432"
+    volumes: # even i off docker engine my data still remain, because postgres_db run on docker engine
+      - postgres_data:/var/lib/postgressql/data
+
+volumes:
+  postgres_data:
+
