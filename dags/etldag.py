@@ -46,7 +46,7 @@ with DAG(
                 f"/v1/forecast?"
                 f"latitude={location['latitude']}&"
                 f"longitude={location['longitude']}&"
-                f"current_weather = true"
+                f"current_weather=true"
             )
 
             response = http_hook.run(endpoint) # store after api hitted by me 
@@ -77,7 +77,7 @@ with DAG(
                 'temperature': current_weather['temperature'],
                 'windspeed': current_weather['windspeed'],
                 'winddirection' : current_weather['winddirection'],
-                'weather_code': current_weather['weathercode']
+                'weathercode': current_weather['weathercode']
             }
 
             transform_data_list.append(transformed_data)
@@ -99,7 +99,9 @@ with DAG(
                 CREATE TABLE IF NOT EXISTS weather_data(
                        latitude  FLOAT,
                        longitude FLOAT,
-                       windspeed FLOAT.
+                       temperature FLOAT,
+                       windspeed FLOAT,
+                       winddirection FLOAT,
                        weathercode FLOAT,
                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                        );
@@ -111,7 +113,7 @@ with DAG(
             cursor.execute("""
 
                     INSERT INTO weather_data(latitude, longitude, temperature, windspeed, winddirection, weathercode)
-                    VALUES(%s, %s, %s, %s, %s, %s); # this automatic fill
+                    VALUES(%s, %s, %s, %s, %s, %s);
 
                           """, (
                               record['latitude'],
@@ -128,7 +130,7 @@ with DAG(
     ### work-flow ETL pipe-line
     weather_data_list = extract_weather_date() # Extract data from API
     transform_data_list = transform_weather_data(weather_data_list) #Transform data json to postgreldb
-    load_weather_data(weather_data_list) # Load data from postgreldb
+    load_weather_data(transform_data_list) # Load data from postgreldb
 
 
 
