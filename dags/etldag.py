@@ -125,6 +125,12 @@ with DAG(
         conn.commit() # run both queries
         conn.close() 
 
+    ### work-flow ETL pipe-line
+    weather_data_list = extract_weather_date() # Extract data from API
+    transform_data_list = transform_weather_data(weather_data_list) #Transform data json to postgreldb
+    load_weather_data(weather_data_list) # Load data from postgreldb
+
+
 
         
 
