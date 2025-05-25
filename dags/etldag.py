@@ -10,7 +10,7 @@ import pendulum
 #start_date = pendulum.now("UTC").subtract(days=1)
 
 # variables
-LOCATION = [
+LOCATIONS = [
     {'latitude': '51.5074', 'longitude' : '-0.1278'}, # london
     {'latitude': '40.7128', 'longitude' : '-74.0064'}, # new york
     {'latitude': '48.8566', 'longitude' : '2.3522'} # paris
@@ -32,6 +32,23 @@ with DAG(
     default_args=default_args,
     schedule = '@daily', # AUTOMATIC daily update
     catchup= False # by default its True, [if False , only run current date , ignore previous date]
-)
+) as dag: # all above hold in one variable dag
+    
+    @task()# task define when which one run
+    def extract_weather_date():
+        http_hook = HttpHook(http_conn_id= API_CONN_ID, method='GET') # connect api
+        weather_data_list = [] #empty list so when reponse came its store
+
+        for location in LOCATIONS: # how i want to store and what
+            endpoint = (
+                f"/v1/forecast?"
+                f"latitude={location['latitude']}&"
+                f"longitude={location['longitude']}&"
+                f"current_weather = true"
+            )
+
+            response = http_hook.run(endpoint) # store after api hitted by me 
+    
+    
 
 
