@@ -40,7 +40,6 @@
 
 ### **4. Define API**
 
-* You're using:
 
   ```
   https://api.open-meteo.com/v1/forecast?latitude=30.748882&longitude=76.641357&current_weather=true
